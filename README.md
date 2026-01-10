@@ -45,5 +45,5 @@ The following Python libraries are required:
    ```
 
 ## Credit
-Revision: Jiwon Jang (SNU)
-Original Development: TAs of the 2024/2025 SNU Natural Science Camp (Donghwan Hyeon, Jiwon Jang, Wooseok Kang, Chanjin Lee, Wonhyeong Lee).
+- Revision: Jiwon Jang (SNU)
+- Original Development: TAs of the 2024/2025 SNU Natural Science Camp (Donghwan Hyeon, Jiwon Jang, Wooseok Kang, Chanjin Lee, Wonhyeong Lee).
