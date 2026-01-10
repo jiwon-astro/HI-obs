@@ -4,7 +4,7 @@ This repository contains Python-based tools and workflows for radio astronomy ob
 The project was specifically refined for the **2026 KAO (Korea Astronomy Olympiad) Winter School**.
 
 ## Overview
-The project enables users to acquire, process, and analyze radio signals, with a focus on the 21cm neutral hydrogen (HI) line. It provides a full pipeline from hardware-level data acquisition to physical parameter estimation, including antenna temperature and LSR (Local Standard of Rest) velocity.
+The project enables users to acquire, process, and analyze radio signals, with a focus on the 21cm neutral hydrogen (HI) line. It provides a full pipeline from data acquisition to calibration, including antenna temperature and LSR (Local Standard of Rest) velocity.
 
 ### Key Features
 - **SDR Data Acquisition**: Direct interface with RTL-SDR dongles for IQ sampling and power spectrum calculation.
