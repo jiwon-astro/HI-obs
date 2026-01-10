@@ -42,3 +42,8 @@ The following Python libraries are required:
    # Observe the sky at a specific target
    obs = Exposure(n_obs=10, exposure_type='sky')
    obs.run()
+   ```
+
+## Credit
+Revision: Jiwon Jang (SNU)
+Original Development: TAs of the 2024/2025 SNU Natural Science Camp (Donghwan Hyeon, Jiwon Jang, Wooseok Kang, Chanjin Lee, Wonhyeong Lee).
