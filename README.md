@@ -22,6 +22,10 @@ The project enables users to acquire, process, and analyze radio signals, with a
     - `config.py`: Manages directory paths for data storage and logging.
 
 ## Requirements
+Pre-requisites:
+- Python 3.8 or higher is recommended.
+- RTL-SDR Hardware: You need a compatible RTL-SDR USB dongle.
+
 The following Python libraries are required:
 - `numpy`
 - `astropy`
