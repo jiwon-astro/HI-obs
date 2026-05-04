@@ -14,15 +14,15 @@ The project enables users to acquire, process, and analyze radio signals, with a
 - **Data Management**: Automated logging of observation metadata and structured storage of spectral data in CSV format.
 
 ## Repository Structure
-- `radio/` (Package Directory)
+- `radio/`
     - `constants.py`: Defines observatory location, default sampling rates, and SDR configurations.
     - `sdr.py`: Contains the `Exposure` class to manage observation runs and hardware interaction.
     - `utils.py`: Utility functions for time conversion, coordinate transforms, PSD (Power Spectral Density) calculation, and LSR corrections.
     - `io.py`: Handles saving/loading of spectra and observation logs.
     - `config.py`: Manages directory paths for data storage and logging.
 
-## Requirements
-Pre-requisites:
+## Installation
+### Pre-requisites:
 - Python 3.8 or higher is recommended.
 - RTL-SDR Hardware: You need a compatible RTL-SDR USB dongle.
 - USB Driver - **Zadig** (https://zadig.akeo.ie/)
@@ -37,12 +37,19 @@ The following Python libraries are required:
 - `matplotlib`
 - `tqdm`
 
+### Installation
+You can install the `HI-obs` package by
+
+    $ git clone https://github.com/jiwon-astro/HI-obs.git
+    $ cd HI-obs
+    $ pip install -e .
+
 ## Usage
 1. **Setup**: Connect your RTL-SDR device.
 2. **Configuration**: Set your root directory and observatory coordinates in `constants.py` or through the `set_root_dir()` function.
 3. **Observation**: Use the `Exposure` class in `sdr.py` to start taking data:
     1. *idx*: SDR channel (for multi-channel SDRs, default = 0)
-   2. *n_obs*: number of frames to observe (each frame acquires $N_{\rm sample}=2^{18}$ IQ samples, and the series of frames are converted via FFT and accumulated to $N_{\rm FFT}=2^{10}$ frequency channels)
+   2. *n_obs*: number of frames to observe (each frame acquires $N_{\rm sample}=2^{18}$ IQ samples, and the series of frames are converted to power spectrum via FFT and accumulated to $N_{\rm FFT}=2^{10}$ frequency channels)
     3. *exposure_type*: `gnd` or `sky`
         - `gnd`: mode for observing the ambient frame (e.g., radio absorbers, ground..)
         - `sky`: mode for observing the specific direction in the sky. It requires pointing information, including the elevation/azimuth angle in degrees (Caution: Elevation should be strictly below 90 degrees.). <br> <br>
