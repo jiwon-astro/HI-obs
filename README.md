@@ -41,6 +41,7 @@ The following Python libraries are required:
 1. **Setup**: Connect your RTL-SDR device.
 2. **Configuration**: Set your root directory and observatory coordinates in `constants.py` or through the `set_root_dir()` function.
 3. **Observation**: Use the `Exposure` class in `sdr.py` to start taking data:
+  - idx: SDR channel (for multi-channel SDRs, default = 0)
    ```python
    from radio.sdr import Exposure
    # Observe the sky at a specific target
