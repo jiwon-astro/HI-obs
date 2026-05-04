@@ -1,7 +1,7 @@
 # HI-obs
 Python code for galactic HI line observation with SDR-based radio telescope
 This repository contains Python-based tools and workflows for radio astronomy observations using a portable **RTL-SDR** setup. 
-The project was specifically refined for the **2026 KAO (Korea Astronomy Olympiad) Winter School**.
+The project was specifically refined for the **Radio Astronomy** course at KAIST.
 
 ## Overview
 The project enables users to acquire, process, and analyze radio signals, with a focus on the 21cm neutral hydrogen (HI) line. It provides a full pipeline from data acquisition to calibration, including antenna temperature and LSR (Local Standard of Rest) velocity.
@@ -15,7 +15,7 @@ The project enables users to acquire, process, and analyze radio signals, with a
 
 ## Repository Structure
 - `radio/` (Package Directory)
-    - `constants.py`: Defines observatory location (e.g., NYSC, Goheung), default sampling rates, and SDR configurations.
+    - `constants.py`: Defines observatory location, default sampling rates, and SDR configurations.
     - `sdr.py`: Contains the `Exposure` class to manage observation runs and hardware interaction.
     - `utils.py`: Utility functions for time conversion, coordinate transforms, PSD (Power Spectral Density) calculation, and LSR corrections.
     - `io.py`: Handles saving/loading of spectra and observation logs.
@@ -44,10 +44,10 @@ The following Python libraries are required:
    ```python
    from radio.sdr import Exposure
    # Observe the sky at a specific target
-   obs = Exposure(n_obs=10, exposure_type='sky')
+   obs = Exposure(idx = 0, n_obs=10, exposure_type='sky')
    obs.run()
    ```
 
 ## Credit
-- Revision: Jiwon Jang (SNU)
+- Revision: Jiwon Jang (KAIST)
 - Original Development: TAs of the 2024/2025 SNU Natural Science Camp (Donghwan Hyeon, Jiwon Jang, Wooseok Kang, Chanjin Lee, Wonhyeong Lee).
