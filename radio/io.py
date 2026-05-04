@@ -36,10 +36,11 @@ def load_spectra_from_list(log, exposure_type = None,
     print(f"Data directory = {data_dir}")
     
     mask = (log['type'] == exposure_type)
+    # ToDo: cone search?
     if (alt is not None) and (az is not None):
         mask &= (log['alt [deg]'] == alt) & (log['az [deg]'] == az)
     elif (l is not None) and (b is not None):
-        mask &= (log['l [deg]'] == alt) & (log['b [deg]'] == az)
+        mask &= (log['l [deg]'] == l) & (log['b [deg]'] == b)
     
     flist = list(log[mask]['filename'].data)
     
@@ -64,19 +65,22 @@ def load_spectra_from_list(log, exposure_type = None,
 class header:
     obstime: str
     ftype: str
+    idx: int
     l: float
     b: float
-    fc: float
     texp: float
+    fc: float
+    fs: float
+    gain: float
         
 def load_source_header(log, fname):
     tbl = log[log['filename']==fname][0]
-    hdr = header(obstime=tbl['UT'],ftype=tbl['type'],
-                 l=tbl['l [deg]'], b=tbl['b [deg]'], 
-                 fc=tbl['fcen [MHz]'], texp=tbl['t_exp [s]'])
+    hdr = header(obstime=tbl['UT'],ftype=tbl['type'], idx=tbl['channel'],
+                 l=tbl['l [deg]'], b=tbl['b [deg]'], texp=tbl['t_exp [s]'],
+                 fc=tbl['fcen [MHz]'], fs=tbl['fsample [MHz]'], gain=tbl['ADC gain'])
     return hdr
     
-def write_obs_log(time: str, exposure_type: str, observatory,
+def write_obs_log(time: str, exposure_type: str, device_idx: int, observatory,
                    alt: float | None, az: float | None, l: float | None, b: float | None, 
                    center_freq: float, sample_rate: float, gain: float, n_obs_act: int,
                    t_exp: float, data_filename: str):
@@ -86,15 +90,16 @@ def write_obs_log(time: str, exposure_type: str, observatory,
     log_path = get_log_dir() / f'log_{obsdate}.csv'
     
     fieldnames = [
-        "UT", "type", "obs_lat [deg]", "obs_lon [deg]",
+        "UT", "type", "channel", "obs_lat [deg]", "obs_lon [deg]",
         "alt [deg]", "az [deg]", "l [deg]", "b [deg]", 
-        "fcen [MHz]", "fsampl [MHz]", "gain", 
+        "fcen [MHz]", "fsample [MHz]", "ADC gain", 
         "n_obs", "t_exp [s]", "filename"
     ]
 
     row = {
         "UT": time,
         "type": exposure_type,
+        "channel": device_idx,
         "obs_lat [deg]": f"{obs_lat:.8f}",
         "obs_lon [deg]": f"{obs_lon:.8f}",
         "alt [deg]": "NaN" if alt is None else f"{alt:.2f}",
@@ -102,8 +107,8 @@ def write_obs_log(time: str, exposure_type: str, observatory,
         "l [deg]": "NaN" if l   is None else f"{l:.2f}",
         "b [deg]": "NaN" if b   is None else f"{b:.2f}",
         "fcen [MHz]": f"{center_freq:.3f}",
-        "fsampl [MHz]": f"{sample_rate:.3f}",
-        "gain": f"{gain:.3f}",
+        "fsample [MHz]": f"{sample_rate:.3f}",
+        "ADC gain": f"{gain:.3f}",
         "n_obs": int(n_obs_act),
         "t_exp [s]": f"{t_exp:.6f}",
         "filename": data_filename,

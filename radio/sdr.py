@@ -4,12 +4,16 @@ from tqdm.notebook import tqdm
 from astropy.stats import sigma_clipped_stats
 
 from .constants import N_SIG, N_DAQ, N_FFT, fs_def, fc_def, gain_def, observatory
-from .utils import isotime, alt_az_to_ra_dec, alt_az_to_l_b, calc_psd
+from .utils import isotime, alt_az_to_ra_dec, alt_az_to_l_b
 from .io import save_spectrum, write_obs_log
 
+from kraken.gpu import calc_psd
+
 # simple SDR acquisition
-def expose_sdr(n_samples, sample_rate=fs_def, center_freq=fc_def, gain=gain_def):
-    sdr = RtlSdr()
+def expose_sdr(n_samples, sample_rate=fs_def, center_freq=fc_def, gain=gain_def,
+               ch=0):
+    sdr = RtlSdr(device_index=ch)
+    sdr.device_index=ch
     sdr.sample_rate = sample_rate  # equals bandwidth (Hz) in complex (IQ) sampling (Nyquist-Shannon)
     sdr.center_freq = center_freq  # center frequency (Hz)
     sdr.freq_correction = 1  # no need to correct
@@ -22,9 +26,10 @@ def expose_sdr(n_samples, sample_rate=fs_def, center_freq=fc_def, gain=gain_def)
 # Exposure module
 class Exposure:
     """Exposures whose pointing and obstime can be considered the same"""
-    def __init__(self, n_obs=10, exposure_type = None, n_fft = N_FFT,
+    def __init__(self, idx=0, n_obs=10, exposure_type = None, n_fft = N_FFT,
                 center_freq = fc_def, sample_rate = fs_def, gain = gain_def,
-                observatory = observatory):
+                observatory = observatory, offset_correction = True):
+        self.device_idx = idx # device index
         self.n_obs = n_obs # number of iterations 
         self.n_fft = n_fft # number of the spectral channels (N_DAQ/fn_fft frame averaged)
         self.exposure_type = exposure_type # e.g., sky, gnd
@@ -33,6 +38,8 @@ class Exposure:
         self.center_freq = center_freq  # center frequency (Hz)
         self.freq_correction = 1  # no need to correct
         self.gain = gain  # find the highest value before saturation
+
+        self.offset_correction = offset_correction # substract DC component for calculating the PSD
         
         self.observatory = observatory
         self.time = isotime() # current time
@@ -48,11 +55,14 @@ class Exposure:
         else:
             alt = float(input("Altitude [deg] = "))
             az  = float(input("Azimuthal angle [deg] = "))
+            print(alt, az, type(alt))
             self.alt = alt; self.az = az
 
             # convert to (ra, dec) & (l, b)
             self.ra, self.dec = alt_az_to_ra_dec(self.alt, self.az, self.time)
+            print(self.ra, self.dec, self.time)
             self.l, self.b    = alt_az_to_l_b(self.alt, self.az, self.time)
+            print(self.l, self.b, self.time)
             print(f"Data will be saved at [{self.time}] with l={self.l:.0f}, b={self.b:.0f}")
             
         # create stoarge
@@ -72,7 +82,7 @@ class Exposure:
         sdr.freq_correction = 1  # no need to correct
     
     def run(self):
-        self.sdr = RtlSdr()
+        self.sdr = RtlSdr(device_index=self.device_idx)
         self.config(sample_rate= self.sample_rate,
                     center_freq= self.center_freq,
                     gain= self.gain)
@@ -98,6 +108,7 @@ class Exposure:
         log_path = write_obs_log(
             time=self.time,
             exposure_type=self.exposure_type,
+            device_idx=self.device_idx,
             observatory = self.observatory,
             alt=getattr(self, "alt", None),
             az=getattr(self, "az", None),
@@ -130,9 +141,9 @@ class Exposure:
         return samples
 
     def _get_spectrum(self, i, samples):
-        freq, power = calc_psd(samples, fs = self.sample_rate/1e6, fc = self.center_freq/1e6,
-                               N_fft= self.n_fft, overlap=0, window_func=np.hamming, 
-                               offset_correction = True)
+        if self.offset_correction: samples -= np.mean(samples)
+        freq, power = calc_psd(samples, fs = self.sample_rate, fc = self.center_freq,
+                               N_fft= self.n_fft, overlap=0, window_func=np.hamming)
         if self.freq is None: self.freq = freq
         #assert np.array_equal(self.freq, freq)  # ensure the same frequency grid is used for all exposures
         self.powers[i] = power

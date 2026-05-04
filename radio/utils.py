@@ -1,7 +1,7 @@
 import numpy as np
 import astropy.units as u
 from astropy.time import Time
-from astropy.coordinates import SkyCoord, Angle
+from astropy.coordinates import SkyCoord, Angle, LSR
 
 from .constants import observatory
 
@@ -78,16 +78,21 @@ LSR velocity conversion
 """
 def LSR_correction(l, b, obstime, observatory = observatory):
     coord = SkyCoord(l=l * u.deg, b=b * u.deg, frame="galactic", obstime=obstime, location=observatory)
-    # Heliocentric correction
-    helio_corr = coord.radial_velocity_correction("heliocentric").to(u.km / u.second).value
+    # Barycentric correction
+    bary_corr = coord.radial_velocity_correction("barycentric").to(u.km / u.second).value
     # Peculiar velocity of sun
-    U, V, W = 10, 5, 7
-    peculiar_corr = U * np.sin(l) + V * np.cos(l)
-    return helio_corr, peculiar_corr
+    V_pec = LSR().v_bary.d_xyz.value
+    l_rad, b_rad = np.deg2rad(l), np.deg2rad(b)
+    pointing = np.array([np.cos(l_rad)*np.cos(b_rad),
+                         np.sin(l_rad)*np.cos(b_rad),
+                         np.sin(b_rad)])
+    peculiar_corr = np.dot(V_pec, pointing)
+    return bary_corr, peculiar_corr
 
 """
 Power spectrum calculation
 """
+# -> replace to GPU version!
 def calc_psd(sample, fs, fc=0, N_fft=1024, overlap=0, window_func=np.hamming,
             offset_correction = True):
 
@@ -114,3 +119,14 @@ def calc_psd(sample, fs, fc=0, N_fft=1024, overlap=0, window_func=np.hamming,
     psd = np.mean(psd_seg, axis=0)
 
     return freq, psd
+
+def plot_psd(freq, P, ax=None, **kwargs):
+    # Power in linear scale
+    P_db = 10*np.log10(P)
+    if ax is None:
+        fig, ax = plt.subplots(1,1,figsize=(8,4))
+    ax.plot(freq, P_db, **kwargs)
+    ax.set_ylabel("Power [dB/MHz]")
+    ax.set_xlabel("Frequency [MHz]")
+    ax.set_xlim(freq[0], freq[-1])
+    return ax
