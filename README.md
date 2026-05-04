@@ -3,7 +3,7 @@ Python code for galactic HI line observation with SDR-based radio telescope
 This repository contains Python-based tools and workflows for radio astronomy observations using a portable **RTL-SDR** setup. 
 The project was specifically refined for the **Radio Astronomy** course at KAIST.
 
-## Overview
+## 1. Overview
 The project enables users to acquire, process, and analyze radio signals, with a focus on the 21cm neutral hydrogen (HI) line. It provides a full pipeline from data acquisition to calibration, including antenna temperature and LSR (Local Standard of Rest) velocity.
 
 ### Key Features
@@ -13,7 +13,7 @@ The project enables users to acquire, process, and analyze radio signals, with a
 - **Flux Calibration**: Implementation of the Y-factor method using ground (ambient) and sky observations to determine antenna temperature ($T_A$).
 - **Data Management**: Automated logging of observation metadata and structured storage of spectral data in CSV format.
 
-## Repository Structure
+## 2. Repository Structure
 - `radio/`
     - `constants.py`: Defines observatory location, default sampling rates, and SDR configurations.
     - `sdr.py`: Contains the `Exposure` class to manage observation runs and hardware interaction.
@@ -21,7 +21,7 @@ The project enables users to acquire, process, and analyze radio signals, with a
     - `io.py`: Handles saving/loading of spectra and observation logs.
     - `config.py`: Manages directory paths for data storage and logging.
 
-## Installation
+## 3. Installation
 ### Pre-requisites:
 - Python 3.8 or higher is recommended.
 - RTL-SDR Hardware: You need a compatible RTL-SDR USB dongle.
@@ -44,7 +44,9 @@ You can install the `HI-obs` package by
     $ cd HI-obs
     $ pip install -e .
 
-## Usage
+## 4. Usage
+For guidance on using the package, refer to the example code in `RadioLab.ipynb`.
+
 1. **Setup**: Connect your RTL-SDR device.
 2. **Configuration**: Set your root directory and observatory coordinates in `constants.py` or through the `set_root_dir()` function.
 3. **Observation**: Use the `Exposure` class in `sdr.py` to start taking data:
