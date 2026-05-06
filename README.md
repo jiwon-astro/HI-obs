@@ -63,6 +63,6 @@ For guidance on using the package, refer to the example code in `RadioLab.ipynb`
    obs.run()
    ```
 
-## Credit
+## 5. Credit
 - Revision: Jiwon Jang (KAIST)
 - Original Development: TAs of the 2024/2025 SNU Natural Science Camp (Donghwan Hyeon, Jiwon Jang, Wooseok Kang, Chanjin Lee, Wonhyeong Lee).

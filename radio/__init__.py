@@ -1,4 +1,3 @@
-from .sdr import Exposure, expose_sdr
 from .constants import N_DAQ, N_FFT, observatory
 from .config import set_root_dir, get_data_dir, get_log_dir
 from .utils import calc_psd, LSR_correction

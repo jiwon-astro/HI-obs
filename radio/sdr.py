@@ -7,7 +7,10 @@ from .constants import N_SIG, N_DAQ, N_FFT, fs_def, fc_def, gain_def, observator
 from .utils import isotime, alt_az_to_ra_dec, alt_az_to_l_b
 from .io import save_spectrum, write_obs_log
 
-from kraken.gpu import calc_psd
+try:
+    from kraken.gpu import calc_psd
+except ModuleNotFoundError:
+    from .utils import calc_psd
 
 # simple SDR acquisition
 def expose_sdr(n_samples, sample_rate=fs_def, center_freq=fc_def, gain=gain_def,
