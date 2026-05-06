@@ -66,6 +66,8 @@ class header:
     obstime: str
     ftype: str
     idx: int
+    alt: float
+    az: float
     l: float
     b: float
     texp: float
@@ -76,6 +78,7 @@ class header:
 def load_source_header(log, fname):
     tbl = log[log['filename']==fname][0]
     hdr = header(obstime=tbl['UT'],ftype=tbl['type'], idx=tbl['channel'],
+                 alt=tbl['alt [deg]'], az=tbl['az [deg]'],
                  l=tbl['l [deg]'], b=tbl['b [deg]'], texp=tbl['t_exp [s]'],
                  fc=tbl['fcen [MHz]'], fs=tbl['fsample [MHz]'], gain=tbl['ADC gain'])
     return hdr

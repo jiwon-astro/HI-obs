@@ -21,7 +21,7 @@ def expose_sdr(n_samples, sample_rate=fs_def, center_freq=fc_def, gain=gain_def,
     sdr.center_freq = center_freq  # center frequency (Hz)
     sdr.freq_correction = 1  # no need to correct
     sdr.gain = gain  # find the highest value before saturation
-    
+
     samples = sdr.read_samples(n_samples)
     sdr.close()
     return samples
@@ -81,8 +81,15 @@ class Exposure:
         # configuration
         sdr.sample_rate = sample_rate
         sdr.center_freq = center_freq
-        sdr.gain = gain
+        # SDR gain
+        sdr.set_agc_mode(False)  # RTL2832 digital AGC OFF (preventing the jump in power level)
+        sdr.gain = gain # manual gain 
+        # frequency correction
         sdr.freq_correction = 1  # no need to correct
+
+        # initialization
+        sdr.reset_buffer()
+        _ = sdr.read_samples(N_DAQ) # discard initial frame (possibly transient signals)
     
     def run(self):
         self.sdr = RtlSdr(device_index=self.device_idx)
