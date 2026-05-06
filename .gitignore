@@ -6,8 +6,16 @@ dist/
 # Python cache
 __pycache__/
 *.py[cod]
+.ipynb_checkpoints/
+*.egg-info/
 
 # Virtual environments
 .venv/
 venv/
 env/
+
+# data files
+data/
+*.npy
+*.csv
+*.fits
