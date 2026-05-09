@@ -82,7 +82,7 @@ class Exposure:
         sdr.sample_rate = sample_rate
         sdr.center_freq = center_freq
         # SDR gain
-        sdr.set_agc_mode(False)  # RTL2832 digital AGC OFF (preventing the jump in power level)
+        #sdr.set_agc_mode(False)  # RTL2832 digital AGC OFF (preventing the jump in power level)
         sdr.gain = gain # manual gain 
         # frequency correction
         sdr.freq_correction = 1  # no need to correct

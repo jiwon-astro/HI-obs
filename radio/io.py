@@ -30,10 +30,10 @@ def load_data(filename):
 
 def load_spectra_from_list(log, exposure_type = None,
                            alt=None, az=None, l=None, b=None,
-                           data_dir = None, mask = None):
+                           data_dir = None, mask = None, verbose=False):
     # log = astropy.Table
     data_dir = data_dir or get_data_dir()
-    print(f"Data directory = {data_dir}")
+    if verbose: print(f"Data directory = {data_dir}")
     
     mask = (log['type'] == exposure_type)
     # ToDo: cone search?
@@ -46,19 +46,19 @@ def load_spectra_from_list(log, exposure_type = None,
     
     loaded  = {}
     missing = []
-    print("------ loaded -------")
+    if verbose: print("------ loaded -------")
     for fname in flist:
         p = data_dir / str(fname)
         if not p.exists():
             missing.append(str(fname))
             continue
         loaded[str(fname)] = load_data(p)
-        print(f"{fname}")
+        if verbose: print(f"{fname}")
     
-    if missing:
+    if missing and verbose:
         print("------ missing -------")
         for fname in missing: print(f"{fname}")
-    print("")
+    if verbose: print("")
     return loaded, missing
 
 @dataclass
