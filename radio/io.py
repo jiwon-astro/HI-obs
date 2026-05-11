@@ -1,11 +1,68 @@
 import csv
+import numpy as np
 from astropy.table import Table
 from dataclasses import dataclass
 
+from .constants import f0
 from .config import get_data_dir, get_log_dir
-from .utils import isotime, clean_isot, obs_date_from_isot
+from .utils import isotime, clean_isot, obs_date_from_isot, radial_vel
 
-# Data I/O
+# ==================
+# Data Classes
+# ==================
+@dataclass
+class Header:
+    obstime: str
+    ftype: str
+    idx: int
+    alt: float
+    az: float
+    l: float
+    b: float
+    texp: float
+    fc: float
+    fs: float
+    gain: float
+
+@dataclass
+class Observation:
+    fname: str
+    obstime: str
+    az: float
+    alt: float
+    l: float
+    b: float
+    fc: float
+    bandwidth: float  
+    V_bary: float
+    V_pec: float
+    Y: float
+    T_sys: float
+    freq: np.ndarray
+    P_src: np.ndarray
+    P_amb: np.ndarray
+    T_ant: np.ndarray
+    
+    def V_r(self, f0=f0):
+        """Topocentric radial velocity [km/s]."""
+        return radial_vel(self.freq, f0)
+
+    def V_lsr(self, f0=f0):
+        """LSR velocity [km/s]."""
+        return self.V_r(f0) + self.V_bary + self.V_pec
+
+    @property
+    def label(self):
+        return rf"($\ell,\;b$) = ({self.l:.0f}, {self.b:.0f})"
+
+    @property
+    def color_value(self):
+        return 0.5 + (self.l - 180) / 120
+
+
+# ==================
+# Spectrum I/O
+# ==================
 def save_spectrum(freq, power, time=None, x=None, y=None, suffix=None, overwrite = True):
     # (x, y): (Alt, Az) or (l, b)
     if x is None and y is None:
@@ -61,28 +118,21 @@ def load_spectra_from_list(log, exposure_type = None,
     if verbose: print("")
     return loaded, missing
 
-@dataclass
-class header:
-    obstime: str
-    ftype: str
-    idx: int
-    alt: float
-    az: float
-    l: float
-    b: float
-    texp: float
-    fc: float
-    fs: float
-    gain: float
-        
+
+# ==================
+# Header
+# ==================
 def load_source_header(log, fname):
     tbl = log[log['filename']==fname][0]
-    hdr = header(obstime=tbl['UT'],ftype=tbl['type'], idx=tbl['channel'],
+    hdr = Header(obstime=tbl['UT'],ftype=tbl['type'], idx=tbl['channel'],
                  alt=tbl['alt [deg]'], az=tbl['az [deg]'],
                  l=tbl['l [deg]'], b=tbl['b [deg]'], texp=tbl['t_exp [s]'],
                  fc=tbl['fcen [MHz]'], fs=tbl['fsample [MHz]'], gain=tbl['ADC gain'])
     return hdr
-    
+
+# ==================
+# Observation Log
+# ==================
 def write_obs_log(time: str, exposure_type: str, device_idx: int, observatory,
                    alt: float | None, az: float | None, l: float | None, b: float | None, 
                    center_freq: float, sample_rate: float, gain: float, n_obs_act: int,

@@ -4,11 +4,11 @@ import astropy.units as u
 from astropy.time import Time
 from astropy.coordinates import SkyCoord, Angle, LSR
 
-from .constants import observatory
+from .constants import observatory, c
 
-"""
-Time conversion
-"""
+# =======================
+# Time Conversion
+# =======================
 def isotime(time: str = None) -> str:
     """UTC time in ISO format"""
     time = time or Time(Time.now(), format="iso", scale="utc", location=observatory)
@@ -32,9 +32,10 @@ def restore_isot(s: str) -> str:
     t = f"{date}T{time}"
     return t
 
-"""
-Coordinate transform
-"""
+
+# =======================
+# Coordinate Transform
+# =======================
 def ra_dec_to_l_b(ra: str | float, dec: float, time: str = None):
     """
     ra: str (hms) or float (deg)
@@ -74,9 +75,14 @@ def l_b_to_alt_az(l, b, time: str = None):
     coord_aa = coord_gal.transform_to("altaz")
     return coord_aa.alt.value, coord_aa.az.value
 
-"""
-LSR velocity conversion
-"""
+
+# =======================
+# Velocity Conversion
+# =======================
+def radial_vel(freq, f0):
+    # convert frequency to radial velocity
+    return c * (f0 - freq) / freq
+
 def LSR_correction(l, b, obstime, observatory = observatory):
     coord = SkyCoord(l=l * u.deg, b=b * u.deg, frame="galactic", obstime=obstime, location=observatory)
     # Barycentric correction
@@ -90,9 +96,10 @@ def LSR_correction(l, b, obstime, observatory = observatory):
     peculiar_corr = np.dot(V_pec, pointing)
     return bary_corr, peculiar_corr
 
-"""
-Power spectrum calculation
-"""
+
+# ========================
+# Power Spectrum
+# ========================
 # -> replace to GPU version!
 def calc_psd(sample, fs, fc=0, N_fft=1024, overlap=0, window_func=np.hamming,
             offset_correction = True):
