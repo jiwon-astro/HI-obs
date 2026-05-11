@@ -4,7 +4,7 @@ import astropy.units as u
 from astropy.time import Time
 from astropy.coordinates import SkyCoord, Angle, LSR
 
-from .constants import observatory, c
+from .constants import observatory, c, BEAM_SIZE
 
 # =======================
 # Time Conversion
@@ -74,6 +74,37 @@ def l_b_to_alt_az(l, b, time: str = None):
     coord_gal = SkyCoord(l=l * u.deg, b=b * u.deg, frame="galactic", obstime=time, location=observatory)
     coord_aa = coord_gal.transform_to("altaz")
     return coord_aa.alt.value, coord_aa.az.value
+
+
+# =======================
+# Sky Footprints
+# =======================
+def plot_footprints(log, beam_size=BEAM_SIZE, ax=None, label=None):
+    log_sky = log[log['type']=='sky'] # select the sky frames
+    beam_radius = beam_size / 2
+    pa = np.linspace(0, 360, 181)
+    # galactic coords
+    l, b = np.asarray(log_sky['l [deg]']), np.asarray(log_sky['b [deg]'])
+    gal = SkyCoord(l=l*u.deg, b=b*u.deg, frame='galactic')
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(10, 4.5), dpi=150)
+    # beam center
+    ax.scatter(l, b, label=f'Observed Points{label}', color='k', alpha=0.5)
+    for cen in gal:
+        edge = cen.directional_offset_by(pa*u.deg, beam_radius*u.deg)
+        l_edge = edge.l.deg
+        b_edge = edge.b.deg
+        ax.plot(l_edge, b_edge, alpha=0.2, lw=0.8, color='k', zorder=0)
+            
+    ax.set_xlabel('Galactic longitude $l$ [deg]')
+    ax.set_ylabel('Galactic latitude $b$ [deg]')
+    ax.axhline(0, color='k', alpha = 0.3)
+    ax.scatter(180,0, marker='+',color='orange', s=200, zorder=2, label='Anticenter')
+    ax.invert_xaxis()
+    ax.legend(loc='upper right', fontsize=15)
+
+    return fig, ax
 
 
 # =======================

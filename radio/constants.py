@@ -5,6 +5,9 @@ from astropy.coordinates import Angle, EarthLocation
 f0 = 1420.40575177 # rest frame frequency of HI [MHz]
 c  = 299792.458    # lightspeed [km/s]
 
+# Telescope
+BEAM_SIZE = 20.0 # HPBW of the beam [deg]
+
 # Location (NYSC, Goheung)
 obs_lat_s, obs_lon_s = "36d22m10s", "127d21m51s"
 obs_height = 50 # [m]

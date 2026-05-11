@@ -24,42 +24,6 @@ class Header:
     fs: float
     gain: float
 
-@dataclass
-class Observation:
-    fname: str
-    obstime: str
-    az: float
-    alt: float
-    l: float
-    b: float
-    fc: float
-    bandwidth: float  
-    V_bary: float
-    V_pec: float
-    Y: float
-    T_sys: float
-    freq: np.ndarray
-    P_src: np.ndarray
-    P_amb: np.ndarray
-    T_ant: np.ndarray
-    
-    def V_r(self, f0=f0):
-        """Topocentric radial velocity [km/s]."""
-        return radial_vel(self.freq, f0)
-
-    def V_lsr(self, f0=f0):
-        """LSR velocity [km/s]."""
-        return self.V_r(f0) + self.V_bary + self.V_pec
-
-    @property
-    def label(self):
-        return rf"($\ell,\;b$) = ({self.l:.0f}, {self.b:.0f})"
-
-    @property
-    def color_value(self):
-        return 0.5 + (self.l - 180) / 120
-
-
 # ==================
 # Spectrum I/O
 # ==================
