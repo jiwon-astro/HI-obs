@@ -71,7 +71,7 @@ For guidance on using the package, refer to the example code in `RadioLab.ipynb`
    obs.run()
    ```
    <p align="center">
-   <img width="70% alt="Image" src="https://github.com/user-attachments/assets/c464780f-7b3b-4565-9ab5-c797aa933fbc" />
+   <img width="100% alt="Image" src="https://github.com/user-attachments/assets/c464780f-7b3b-4565-9ab5-c797aa933fbc" />
    </p>
 4. **Visualizing observed fields**: After loading an observation log, use `plot_skymap()` to inspect where previous beams fall on the current sky, or `plot_footprints()` to see the accumulated Galactic-coordinate coverage.
 
