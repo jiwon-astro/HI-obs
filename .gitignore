@@ -19,3 +19,7 @@ data/
 *.npy
 *.csv
 *.fits
+
+# log files
+data/log/
+*.csv

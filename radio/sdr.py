@@ -4,7 +4,7 @@ from tqdm.notebook import tqdm
 from astropy.stats import sigma_clipped_stats
 
 from .constants import N_SIG, N_DAQ, N_FFT, fs_def, fc_def, gain_def, observatory
-from .utils import isotime, alt_az_to_ra_dec, alt_az_to_l_b
+from .utils import isotime, altaz2eq, altaz2gal
 from .io import save_spectrum, write_obs_log
 
 try:
@@ -62,9 +62,9 @@ class Exposure:
             self.alt = alt; self.az = az
 
             # convert to (ra, dec) & (l, b)
-            self.ra, self.dec = alt_az_to_ra_dec(self.alt, self.az, self.time)
+            self.ra, self.dec = altaz2eq(self.alt, self.az, self.time)
             print(self.ra, self.dec, self.time)
-            self.l, self.b    = alt_az_to_l_b(self.alt, self.az, self.time)
+            self.l, self.b    = altaz2gal(self.alt, self.az, self.time)
             print(self.l, self.b, self.time)
             print(f"Data will be saved at [{self.time}] with l={self.l:.0f}, b={self.b:.0f}")
             

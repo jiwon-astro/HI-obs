@@ -1,14 +1,14 @@
-# ttrt/config.py
-from pathlib import Path
+# radio/config.py
 import os
+from pathlib import Path
 
-_ENV_ROOT = "TTRT_ROOT_DIR"
+_ENV_ROOT = "RADIO_ROOT_DIR"
 _ROOT_DIR: Path | None = None
 
 def _resolve_root(path: str | os.PathLike | None = None) -> Path:
     """set ROOT_DIR:
     1) set_root_dir()
-    2) TTRT_ROOT_DIR
+    2) RADIO_ROOT_DIR
     3) Path.cwd()
     """
     if path is not None: return Path(path).expanduser().resolve()

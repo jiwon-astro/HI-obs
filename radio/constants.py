@@ -1,5 +1,8 @@
 import astropy.constants as const
 from astropy.coordinates import Angle, EarthLocation
+from pathlib import Path
+
+PACKAGE_DIR = Path(__file__).resolve().parent # radio module
 
 # astrophysical constants
 f0 = 1420.40575177 # rest frame frequency of HI [MHz]
@@ -13,6 +16,11 @@ obs_lat_s, obs_lon_s = "36d22m10s", "127d21m51s"
 obs_height = 50 # [m]
 obs_lat, obs_lon = Angle(obs_lat_s), Angle(obs_lon_s)
 observatory = EarthLocation.from_geodetic(lat=obs_lat, lon=obs_lon, height=obs_height)
+
+# Catalog paths
+CATALOG_DIR = PACKAGE_DIR.parent / "data" / "catalog"
+DEFAULT_STAR_CAT = CATALOG_DIR / "hip1.csv"
+DEFAULT_RADIO_CAT = CATALOG_DIR / "3cr_vizier_clean.csv"
 
 # sigma clipping
 N_SIG = 3. 
