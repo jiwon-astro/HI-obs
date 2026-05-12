@@ -4,7 +4,7 @@ This repository contains Python-based tools and workflows for radio astronomy ob
 The project was specifically refined for the **Radio Astronomy** course at KAIST.
 
 ## 1. Overview
-The project enables users to acquire, process, and analyze radio signals, with a focus on the 21cm neutral hydrogen (HI) line. It provides a full pipeline from data acquisition to calibration, including antenna temperature and LSR (Local Standard of Rest) velocity.
+The project enables users to acquire, process, and analyze radio signals, with a focus on the 21cm neutral hydrogen (HI) line. It provides a full pipeline from data acquisition to calibration, including antenna temperature and LSR (Local Standard of Rest) frame conversion.
 
 ### Key Features
 - **SDR Data Acquisition**: Direct interface with RTL-SDR dongles for IQ sampling and power spectrum calculation.
@@ -12,16 +12,20 @@ The project enables users to acquire, process, and analyze radio signals, with a
 - **LSR Velocity Correction**: Calculation of radial velocity corrections to account for the Earth's and Sun's motion relative to the Local Standard of Rest.
 - **Flux Calibration**: Implementation of the Y-factor method using ground (ambient) and sky observations to determine antenna temperature ($T_A$).
 - **Data Management**: Automated logging of observation metadata and structured storage of spectral data in CSV format.
-- **Sky-map and Footprint Visualization**: Plot observed beams on an Alt/Az sky map with Galactic coordinate grids, bright star / radio-source catalog overlays, and Galactic-plane footprints. (credit: Hakjin Lee (KAIST))
+- **Sky-map and Footprint Visualization**: Plot observed beams on an Alt/Az sky map with Galactic coordinate grids, bright star / radio-source catalog overlays, and Galactic-plane footprints. (*Credit: Hakjin Lee (KAIST)*)
+
 
 ## 2. Repository Structure
 - `radio/`
     - `constants.py`: Defines observatory location, sampling rates, and SDR configurations.
     - `sdr.py`: Contains the `Exposure` class to manage observation runs and hardware interaction.
-    - `utils.py`: Utility functions for time conversion, coordinate transforms, power spectral density (PSD) calculation, and LSR corrections.
+     - `analysis.py`: Data reduction (pre-processing/calibration)
+    - `utils.py`: Utility functions for time conversion, coordinate transforms, power spectral density (PSD) calculation, LSR corrections, and visualization functions.
     - `io.py`: Handles saving/loading of spectra and observation logs.
     - `config.py`: Manages directory paths for data storage and logging.
-    - `data/catalog/`: Optional catalog tables used by the visualization helpers (default: Hiparcos (bright-star catalog, https://cdsarc.cds.unistra.fr/viz-bin/cat/I/239), 3CR catalog (bright-radio source catalog (@152MHz), https://cdsarc.cds.unistra.fr/viz-bin/cat/VIII/1A))
+- `data/`
+    - `catalog/`: Optional catalog tables used by the visualization helpers (default: Hiparcos (https://cdsarc.cds.unistra.fr/viz-bin/cat/I/239), 3CR catalog (https://cdsarc.cds.unistra.fr/viz-bin/cat/VIII/1A))
+
 
 ## 3. Installation
 ### Pre-requisites:
@@ -34,6 +38,7 @@ The project enables users to acquire, process, and analyze radio signals, with a
 
 The following Python libraries are required:
 - `numpy`
+- `scipy`
 - `astropy`
 - `pyrtlsdr`
 - `matplotlib`
@@ -45,6 +50,7 @@ You can install the `HI-obs` package by
     $ git clone https://github.com/jiwon-astro/HI-obs.git
     $ cd HI-obs
     $ pip install -e .
+
 
 ## 4. Usage
 For guidance on using the package, refer to the example code in `RadioLab.ipynb`.
@@ -72,12 +78,12 @@ For guidance on using the package, refer to the example code in `RadioLab.ipynb`
 
    # Current Alt/Az sky map
    curr_time = Time.now()
-   fig, ax = plot_skymap(log, timezone="KST")
+   fig, ax = plot_skymap(log, curr_time, timezone="KST")
 
    # Galactic footprints of the all-sky observations 
    fig, ax = plot_footprints(log, show_idx=True)
    ```
 
 ## 5. Credit
-- Revision: Jiwon Jang (KAIST), Hakjin Lee (KAIST)
+- Revision: **Jiwon Jang (KAIST)**, Hakjin Lee (KAIST)
 - Original Development: TAs of the 2024/2025 SNU Natural Science Camp (Donghwan Hyeon, Jiwon Jang, Wooseok Kang, Chanjin Lee, Wonhyeong Lee).
