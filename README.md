@@ -24,7 +24,7 @@ The project enables users to acquire, process, and analyze radio signals, with a
     - `io.py`: Handles saving/loading of spectra and observation logs.
     - `config.py`: Manages directory paths for data storage and logging.
 - `data/`
-    - `catalog/`: Optional catalog tables used by the visualization helpers (default: Hiparcos (https://cdsarc.cds.unistra.fr/viz-bin/cat/I/239), 3CR catalog (https://cdsarc.cds.unistra.fr/viz-bin/cat/VIII/1A))
+    - `catalog/`: Optional catalog tables used by the visualization helpers (default: *Hiparcos* (https://cdsarc.cds.unistra.fr/viz-bin/cat/I/239), *3CR catalog* (https://cdsarc.cds.unistra.fr/viz-bin/cat/VIII/1A))
 
 
 ## 3. Installation
@@ -70,6 +70,9 @@ For guidance on using the package, refer to the example code in `RadioLab.ipynb`
    obs = Exposure(idx = 0, n_obs=10, exposure_type='sky')
    obs.run()
    ```
+   <p align="center">
+   <img width="70% alt="Image" src="https://github.com/user-attachments/assets/c464780f-7b3b-4565-9ab5-c797aa933fbc" />
+   </p>
 4. **Visualizing observed fields**: After loading an observation log, use `plot_skymap()` to inspect where previous beams fall on the current sky, or `plot_footprints()` to see the accumulated Galactic-coordinate coverage.
 
    ```python
@@ -83,6 +86,9 @@ For guidance on using the package, refer to the example code in `RadioLab.ipynb`
    # Galactic footprints of the all-sky observations 
    fig, ax = plot_footprints(log, show_idx=True)
    ```
+   <p align="center">
+   <img width="70%" alt="Image" src="https://github.com/user-attachments/assets/9b62a9db-46ff-4e71-addc-c8a3bfaec3bf" />
+   </p>
 
 ## 5. Credit
 - Revision: **Jiwon Jang (KAIST)**, Hakjin Lee (KAIST)
