@@ -12,14 +12,16 @@ The project enables users to acquire, process, and analyze radio signals, with a
 - **LSR Velocity Correction**: Calculation of radial velocity corrections to account for the Earth's and Sun's motion relative to the Local Standard of Rest.
 - **Flux Calibration**: Implementation of the Y-factor method using ground (ambient) and sky observations to determine antenna temperature ($T_A$).
 - **Data Management**: Automated logging of observation metadata and structured storage of spectral data in CSV format.
+- **Sky-map and Footprint Visualization**: Plot observed beams on an Alt/Az sky map with Galactic coordinate grids, bright star / radio-source catalog overlays, and Galactic-plane footprints. (credit: Hakjin Lee (KAIST))
 
 ## 2. Repository Structure
 - `radio/`
-    - `constants.py`: Defines observatory location, default sampling rates, and SDR configurations.
+    - `constants.py`: Defines observatory location, sampling rates, and SDR configurations.
     - `sdr.py`: Contains the `Exposure` class to manage observation runs and hardware interaction.
-    - `utils.py`: Utility functions for time conversion, coordinate transforms, PSD (Power Spectral Density) calculation, and LSR corrections.
+    - `utils.py`: Utility functions for time conversion, coordinate transforms, power spectral density (PSD) calculation, and LSR corrections.
     - `io.py`: Handles saving/loading of spectra and observation logs.
     - `config.py`: Manages directory paths for data storage and logging.
+    - `data/catalog/`: Optional catalog tables used by the visualization helpers (default: Hiparcos (bright-star catalog, https://cdsarc.cds.unistra.fr/viz-bin/cat/I/239), 3CR catalog (bright-radio source catalog (@152MHz), https://cdsarc.cds.unistra.fr/viz-bin/cat/VIII/1A))
 
 ## 3. Installation
 ### Pre-requisites:
@@ -62,7 +64,20 @@ For guidance on using the package, refer to the example code in `RadioLab.ipynb`
    obs = Exposure(idx = 0, n_obs=10, exposure_type='sky')
    obs.run()
    ```
+4. **Visualizing observed fields**: After loading an observation log, use `plot_skymap()` to inspect where previous beams fall on the current sky, or `plot_footprints()` to see the accumulated Galactic-coordinate coverage.
+
+   ```python
+   from astropy.time import Time
+   from radio.utils import plot_skymap, plot_footprints
+
+   # Current Alt/Az sky map
+   curr_time = Time.now()
+   fig, ax = plot_skymap(log, timezone="KST")
+
+   # Galactic footprints of the all-sky observations 
+   fig, ax = plot_footprints(log, show_idx=True)
+   ```
 
 ## 5. Credit
-- Revision: Jiwon Jang (KAIST)
+- Revision: Jiwon Jang (KAIST), Hakjin Lee (KAIST)
 - Original Development: TAs of the 2024/2025 SNU Natural Science Camp (Donghwan Hyeon, Jiwon Jang, Wooseok Kang, Chanjin Lee, Wonhyeong Lee).

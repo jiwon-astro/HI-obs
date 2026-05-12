@@ -439,16 +439,16 @@ def plot_footprints(log, beam_size=BEAM_SIZE,
     alpha = min(0.5,10/len(l))
     # Beam coverage in Galactic coordinates
     for i, (l0, b0) in enumerate(zip(l, b)):
-        label = None
+        label0 = None
         if i == 0:
             suffix = "" if label is None else f" {label}"
-            label=f"Observed Points{suffix}"
+            label0=f"Observed Points{suffix}"
 
         plot_beam(ax, lon0=l0, lat0=b0, beam_size=beam_size, 
                   idx=(i + 1 if show_idx else None),
                   frame="galactic", projection=projection,
                   highlight=(i == len(l) - 1), fill=False, 
-                  linewidth=0.8, alpha=alpha, label=label)
+                  linewidth=0.8, alpha=alpha, label=label0)
     
     # Auto zoom around observed region
     if xlim is None:
