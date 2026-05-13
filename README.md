@@ -90,7 +90,7 @@ For guidance on using the package, refer to the example code in `RadioLab.ipynb`
     <p align="center">
    <img width="100% alt="Image" src="https://github.com/user-attachments/assets/c464780f-7b3b-4565-9ab5-c797aa933fbc" />
    </p>
-   
+
     1. `calibrate_antenna_temperature` can calibrate the SDR raw power spectrum to antenna temperature with the Y-factor method. `enable_rejection` option allows automatic detection of RFI peaks and produces an RFI-rejected spectrum.
     2. `LSR_correction` calculates the barycentric correction and solar peculiar motion with respect to LSR at a given observation time and Galactic coordinates $(l, b)$.
     3. `reduce_spectrum` combines both preprocessing functions sequentially, yielding the `Observation` instance. <br> <br>
@@ -103,7 +103,8 @@ For guidance on using the package, refer to the example code in `RadioLab.ipynb`
     T_sky = 10  # Sky background temperature [K]
     
     # Antenna temperature calibration    
-    Y, T_sys, T_ant = calibrate_antenna_temperature(freq, P_src, P_amb, T_amb=T_amb, T_sky=T_sky,                                                     enable_rejection=True)
+    Y, T_sys, T_ant = calibrate_antenna_temperature(freq, P_src, P_amb, T_amb=T_amb, T_sky=T_sky,
+                                                    enable_rejection=True)
 
     # LSR velocity correction
     bary_corr, peculiar_corr = LSR_correction(l =src_hdr.l, b =src_hdr.b,
