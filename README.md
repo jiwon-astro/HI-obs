@@ -70,9 +70,6 @@ For guidance on using the package, refer to the example code in `RadioLab.ipynb`
    obs = Exposure(idx = 0, n_obs=10, exposure_type='sky')
    obs.run()
    ```
-   <p align="center">
-   <img width="100% alt="Image" src="https://github.com/user-attachments/assets/c464780f-7b3b-4565-9ab5-c797aa933fbc" />
-   </p>
 4. **Visualizing observed fields**: After loading an observation log, use `plot_skymap()` to inspect where previous beams fall on the current sky, or `plot_footprints()` to see the accumulated Galactic-coordinate coverage.
 
    ```python
@@ -88,6 +85,31 @@ For guidance on using the package, refer to the example code in `RadioLab.ipynb`
    ```
    <p align="center">
    <img width="70%" alt="Image" src="https://github.com/user-attachments/assets/9b62a9db-46ff-4e71-addc-c8a3bfaec3bf" />
+   </p>
+5. **Calibration** By fetching both source and ambient spectrum, we should calibrate the observed quantities into physical units.
+    1. `calibrate_antenna_temperature` can calibrate the SDR raw power spectrum to antenna temperature using the Y-factor method. `enable_rejection` option enables automatic detection of RFI peaks and yields the RFI-rejected spectrum.
+    2. `LSR_correction` calculates the barycentric correction and solar peculiar motion with respect to LSR at a given observation time and Galactic coordinates $(l, b)$.
+    3. `reduce_spectrum` combines both preprocessing functions sequentially, yielding the `Observation` instance. <br> <br>
+
+    ```python
+    from radio.analysis import calibrate_antenna_temperature, reduce_spectrum
+    from radio.utils import LSR_correction
+
+    T_amb = 290 # Ambient temeperature [K]
+    T_sky = 10  # Sky background temperature [K]
+    
+    # Antenna temperature calibration    
+    Y, T_sys, T_ant = calibrate_antenna_temperature(freq, P_src, P_amb, T_amb=T_amb, T_sky=T_sky,                                                     enable_rejection=True)
+
+    # LSR velocity correction
+    bary_corr, peculiar_corr = LSR_correction(l =src_hdr.l, b =src_hdr.b,
+                                              obstime = src_hdr.obstime)
+    
+    # integrated pre-processing (Antenna temperature + LSR correction)
+    summary = reduce_spectrum(src_hdr, freq, P_src, P_amb)
+    ```
+   <p align="center">
+   <img width="100% alt="Image" src="https://github.com/user-attachments/assets/c464780f-7b3b-4565-9ab5-c797aa933fbc" />
    </p>
 
 ## 5. Credit
