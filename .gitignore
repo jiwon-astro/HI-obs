@@ -22,4 +22,8 @@ data/
 
 # log files
 data/log/
-*.csv
+data/log/**
+
+# keep default catalogs
+!data/catalog/
+!data/catalog/**
